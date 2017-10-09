@@ -38,7 +38,10 @@ TEST(PiezasTest, dropPiece4){
 	ASSERT_EQ(board.dropPiece(0),O);
 	ASSERT_EQ(board.dropPiece(0),X);
 	ASSERT_EQ(board.dropPiece(0),Blank);
-
+}
+TEST(PiezasTest,dropPiece5){
+	Piezas board;
+	ASSERT_EQ(board.dropPiece(4),Invalid);
 }
 TEST(PiezasTest,pieceAt1){
 	Piezas board;
@@ -55,20 +58,41 @@ TEST(PiezasTest,pieceAt3){
 	board.dropPiece(1);
 	ASSERT_EQ(board.pieceAt(1,1),O);
 }
+
 TEST(PiezasTest,winner1){
- Piezas board;
-    board.dropPiece(0);
-    board.dropPiece(0);
-    board.dropPiece(1);
+	Piezas board;
+    board.dropPiece(0);    
+    board.dropPiece(0);    
+    board.dropPiece(1); 
     board.dropPiece(0); 
     board.dropPiece(2); 
     board.dropPiece(1); 
     board.dropPiece(3); 
-	board.dropPiece(1); 
-    board.dropPiece(3); 
-    board.dropPiece(2); 
+    board.dropPiece(1); 
     board.dropPiece(2); 
     board.dropPiece(3); 
-    ASSERT_EQ(board.gameState(), X);	
+    board.dropPiece(2); 
+    board.dropPiece(3); 
+    ASSERT_EQ(board.gameState(), X);
+}
+
+
+TEST(PiezasTest, gameTie)
+{
+ Piezas board;
+
+ board.dropPiece(0); 
+ board.dropPiece(0); 
+ board.dropPiece(0); 
+ board.dropPiece(1); 
+ board.dropPiece(1); 
+ board.dropPiece(1);
+ board.dropPiece(2); 
+ board.dropPiece(3); 
+ board.dropPiece(2);
+ board.dropPiece(3); 
+ board.dropPiece(3); 
+ board.dropPiece(2); 
+ EXPECT_EQ(board.gameState(),Blank);
 }
 

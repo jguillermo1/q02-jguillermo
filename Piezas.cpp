@@ -24,13 +24,8 @@ Piezas::Piezas()
 {
     
     turn = X;
-/*
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < column; j++){
-            
-        }
-    }
-  */  
+ 
+
     board.resize(BOARD_ROWS,std::vector<Piece>(BOARD_COLS,Blank));
   
 }
@@ -58,28 +53,43 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
-    if(column < 0 || column > BOARD_COLS  ){
-        if(turn == X){
-            turn = O;
-        }
-        else{turn = X;}
+    Piece tmp = turn;
+    if(column < 0 || column > BOARD_COLS - 1){
+
         return Invalid;
-    }
-    for(int i = 0; i < BOARD_ROWS  ; i++){
-        if(board[i][column] == Blank){
-            board[i][column] = turn;
-                if(turn == X){
-                turn = O;
-                return X;
-                }
-                else{turn = X;} 
-                return O;
-            }
+    
         }
-    if(turn == X){
-        turn = O;
+    
+    for(int i = 0; i < BOARD_ROWS ; i++){
+        
+            if(board[i][column] == Blank){
+        
+            board[i][column] = turn;
+        
+                if(turn == X){
+        
+                turn = O;
+        
+                return tmp;
+        
+                }
+        
+                else{turn = X;} 
+        
+                return tmp;
+        
+            }
+        
     }
+    
+    if(turn == X){
+    
+        turn = O;
+    
+    }
+    
     else{turn = X;}
+    
     return Blank;
 }
 
@@ -105,51 +115,33 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-    int ocount = 0, xcount = 0, omax = 0, xmax = 0;
-    Piece prev, cur;
-    for(int i = 0; i < BOARD_COLS ;i++){
-        xcount = 0;
+    int xmax = 0,xcount=0; 
+    int omax = 0,ocount=0;
+    Piece prev;
+    std::vector< std::vector<Piece> >::const_iterator row;
+    std::vector<Piece>::const_iterator  col;
+    for(row = board.begin(); row !=board.end();++row){
+        prev = Blank;
         ocount = 0;
-        for(int j = 0; j < BOARD_ROWS ; j++){
-            cur = board[i][j];
-            if(cur==Blank) return Invalid;
-            if(!prev) prev = cur;
-            else if(cur == X){
-                if(cur == prev) xcount++;
+        xcount = 0;
+        for(col = row->begin(); col!=row->end();++col){
+            if(*col == Blank)return Invalid;
+            if(prev==Blank)prev = *col;
+            if(*col==X && prev == X)xcount++;{
                 if(xcount > xmax) xmax = xcount;
-            } 
-            else if(cur == O){
-                if(cur == prev) ocount++;
+            }
+             if(*col == O && prev == O)ocount++;{
                 if(ocount > omax) omax = ocount;
             }
-            prev = cur;
-        }      
+            prev = *col;
+        }
     }
-    
-    Piece prev2,cur2;
-    for(int i = 0; i < BOARD_ROWS;i++){
-        xcount = 0;
-        ocount = 0;
-        for(int j = 0; j < BOARD_COLS; i++){
-            cur2 = board[i][j];
-            if(cur==Blank) return Invalid;
-            if(!prev2) prev2 = cur2;
-            else if(cur2 == X){
-                if(cur2 == prev2) xcount++;
-                if(xcount > xmax) xmax = xcount;
-            } 
-            else if(cur2 == O){
-                if(cur2 == prev) ocount++;
-                if(ocount > omax) omax = ocount;
-            }
-            prev2 = cur2;
-        }      
+    if(xmax > omax){
+        return X;
     }
-    if(xmax > omax) return X;
-    else if( xmax < omax) return O;
-    else{
+    else if (xmax == omax){
         return Blank;
     }
+    else {return O;}
 }
-
-
+    
