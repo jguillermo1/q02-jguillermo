@@ -22,6 +22,17 @@
 **/
 Piezas::Piezas()
 {
+    
+    turn = X;
+/*
+    for(int i = 0; i < row; i++){
+        for(int j = 0; j < column; j++){
+            
+        }
+    }
+  */  
+    board.resize(BOARD_ROWS,std::vector<Piece>(BOARD_COLS,Blank));
+  
 }
 
 /**
@@ -30,6 +41,11 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+    for(int i = 0; i < BOARD_COLS; i++){
+        for(int j = 0; j < BOARD_ROWS;i++){
+                board[i][j] = Blank;
+        }
+    }
 }
 
 /**
@@ -42,8 +58,31 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
+    if(column < 0 || column > BOARD_COLS  ){
+        if(turn == X){
+            turn = O;
+        }
+        else{turn = X;}
+        return Invalid;
+    }
+    for(int i = 0; i < BOARD_ROWS  ; i++){
+        if(board[i][column] == Blank){
+            board[i][column] = turn;
+                if(turn == X){
+                turn = O;
+                return X;
+                }
+                else{turn = X;} 
+                return O;
+            }
+        }
+    if(turn == X){
+        turn = O;
+    }
+    else{turn = X;}
     return Blank;
 }
+
 
 /**
  * Returns what piece is at the provided coordinates, or Blank if there
@@ -51,7 +90,8 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+    if(row < 0 || row > 2   || column < 0 || column > 3) return Invalid;
+    return board[row][column];
 }
 
 /**
@@ -65,5 +105,51 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-    return Blank;
+    int ocount = 0, xcount = 0, omax = 0, xmax = 0;
+    Piece prev, cur;
+    for(int i = 0; i < BOARD_COLS ;i++){
+        xcount = 0;
+        ocount = 0;
+        for(int j = 0; j < BOARD_ROWS ; j++){
+            cur = board[i][j];
+            if(cur==Blank) return Invalid;
+            if(!prev) prev = cur;
+            else if(cur == X){
+                if(cur == prev) xcount++;
+                if(xcount > xmax) xmax = xcount;
+            } 
+            else if(cur == O){
+                if(cur == prev) ocount++;
+                if(ocount > omax) omax = ocount;
+            }
+            prev = cur;
+        }      
+    }
+    
+    Piece prev2,cur2;
+    for(int i = 0; i < BOARD_ROWS;i++){
+        xcount = 0;
+        ocount = 0;
+        for(int j = 0; j < BOARD_COLS; i++){
+            cur2 = board[i][j];
+            if(cur==Blank) return Invalid;
+            if(!prev2) prev2 = cur2;
+            else if(cur2 == X){
+                if(cur2 == prev2) xcount++;
+                if(xcount > xmax) xmax = xcount;
+            } 
+            else if(cur2 == O){
+                if(cur2 == prev) ocount++;
+                if(ocount > omax) omax = ocount;
+            }
+            prev2 = cur2;
+        }      
+    }
+    if(xmax > omax) return X;
+    else if( xmax < omax) return O;
+    else{
+        return Blank;
+    }
 }
+
+
